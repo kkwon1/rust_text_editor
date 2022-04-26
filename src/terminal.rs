@@ -1,6 +1,7 @@
 use crate::Position;
 use crossterm::event;
 use crossterm::event::Event;
+use crossterm::style::{Colors, ResetColor, SetColors};
 use crossterm::{cursor, terminal, ExecutableCommand};
 use std::io::{stdout, Write};
 
@@ -21,7 +22,7 @@ impl Terminal {
         Ok(Self {
             size: Size {
                 width: size.0,
-                height: size.1,
+                height: size.1.saturating_sub(2),
             },
         })
     }
@@ -69,5 +70,13 @@ impl Terminal {
         stdout()
             .execute(terminal::Clear(terminal::ClearType::CurrentLine))
             .ok();
+    }
+
+    pub fn set_colors(colors: Colors) {
+        stdout().execute(SetColors(colors)).ok();
+    }
+
+    pub fn reset_colors() {
+        stdout().execute(ResetColor).ok();
     }
 }
